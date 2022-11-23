@@ -3,6 +3,7 @@
 describe('Acessar o site', () => {
   it('Deveria abrir a pagina do site', () => {
     cy.visit('https://phpauloreis.github.io/todo-list-alpine-js/')
+    expect(cy.get('h1').contains('O que fazer hoje?'))
   })
 })
 
@@ -12,12 +13,12 @@ describe('Cadastrar Tarefas', () => {
   })
   it('Deveria cadastrar uma nova tarefa', () => {
     cy.get('#todo_title').type('Tarefa 1')
-    cy.get('.bg-white > .col-auto > .btn').click()
+    cy.get('button').contains('Criar tarefa').click()
 
     cy.get('[x-text="todo.task"]').contains('Tarefa 1')
   })
   it('Deveria dar erro se não houver titulo para a tarefa', () => {
-    cy.get('.bg-white > .col-auto > .btn').click()
+    cy.get('button').contains('Criar tarefa').click()
 
     cy.on('window:alert', (str) => {
       expect(str).to.equal(`Digite um título para a tarefa!`)
@@ -30,14 +31,14 @@ describe('Deletar Tarefa', () => {
     cy.visit('https://phpauloreis.github.io/todo-list-alpine-js/')
 
     cy.get('#todo_title').type('Tarefa Deletar')
-    cy.get('.bg-white > .col-auto > .btn').click()
+    cy.get('button').contains('Criar tarefa').click()
 
     cy.get('[x-text="todo.task"]').contains('Tarefa Deletar')
   })
-  it.only('Deveria sumir a tarefa ao excluir', () => {
+  it('Deveria sumir a tarefa ao excluir', () => {
     cy.get('[x-text="todo.task"]').should('have.length', 1)
 
-    cy.get('.text-end > .btn-danger').click()
+    cy.get('button').contains('Excluir').click()
 
     cy.on('window:confirm', (str) => {
       expect(str).to.equal(`Tem certeza que deseja remover?`)
@@ -66,7 +67,7 @@ describe('Listar Tarefas', () => {
 
     for(const tarefa of tarefas) {
       cy.get('#todo_title').type(tarefa.title)
-      cy.get('.bg-white > .col-auto > .btn').click()
+      cy.get('button').contains('Criar tarefa').click()
     }
 
     cy.get('table > tbody > tr').each((tr, index) => {
